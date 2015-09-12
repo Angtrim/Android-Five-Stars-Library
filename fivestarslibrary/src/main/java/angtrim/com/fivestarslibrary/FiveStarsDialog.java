@@ -30,7 +30,6 @@ public class FiveStarsDialog  {
     private String negativeMessage;
     private String supportEmail;
     private int buttonsColor = R.color.md_material_blue_600;
-    private int accessTimes = 3;
     private View positiveButton;
     private View negativeButton;
     private View neutralButton;
