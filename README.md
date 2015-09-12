@@ -11,7 +11,7 @@ If the user gives **3 or less stars out of 5**, the user is asked to *send a bug
 ## Preview
 
 
-![Preview](fivestarslibrary/src/main/res/drawable/screen.png=250?raw=true )
+<img src="fivestarslibrary/src/main/res/drawable/screen.png" alt="preview" style="width:250px;">
 
 
 
