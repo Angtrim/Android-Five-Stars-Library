@@ -1,6 +1,7 @@
 ## Android Five Stars Library
 
-Android Five Stars Library is a small library that helps developer add a **"Rate My App"** dialog to their applications.
+Android Five Stars Library is a small library that helps developers add a **"Rate My App"** dialog to their applications.
+
 It's called "Five Stars" because the dialog has a different behaviour based on the rating given by the user.
 
 If the user gives **4 or 5 stars out of 5**, the user is sent to the *Google Play Store* page to give an actual rating.
@@ -10,7 +11,7 @@ If the user gives **3 or less stars out of 5**, the user is asked to *send a bug
 ## Preview
 
 
-![Alt text](fivestarslibrary/src/main/res/drawable/screen.png?raw=true )
+![Preview](fivestarslibrary/src/main/res/drawable/screen.png=250?raw=true )
 
 
 
@@ -49,6 +50,11 @@ Example:
 ```java
 new FiveStarsDialog(this,"your@email.com").setRateText("my rate text").showAfter(5);
 ```
+## Features
+
+The library is very simple, just note that :
+* When the user tap OK or NEVER the dialog will not show again
+* When the user tap NOT NOW the dialog will show after `0 - numberOfAccess*2` times
 
 ## Used by
 
