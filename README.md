@@ -29,7 +29,7 @@ To use the library, first include it your project using Gradle
     }
 
 	dependencies {
-	        compile 'com.github.Angtrim:Android-Five-Stars-Library:1.0'
+	        compile 'com.github.Angtrim:Android-Five-Stars-Library:v1.1'
 	}
 
 
