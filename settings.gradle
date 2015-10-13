@@ -1,1 +1,1 @@
-include ':fivestarslibrary'
+include ':fivestarslibrary', ':sampleapp'

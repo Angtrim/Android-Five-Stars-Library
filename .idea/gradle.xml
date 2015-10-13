@@ -11,6 +11,7 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/fivestarslibrary" />
+            <option value="$PROJECT_DIR$/sampleapp" />
           </set>
         </option>
       </GradleProjectSettings>
