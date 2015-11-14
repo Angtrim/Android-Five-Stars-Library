@@ -63,6 +63,8 @@ public class FiveStarsDialog  implements DialogInterface.OnClickListener{
                 Log.d(TAG, "Rating changed : " + v);
                 if (isForceMode && v >= upperBound) {
                     openMarket();
+                    if(reviewListener != null)
+                        reviewListener.onReview((int)ratingBar.getRating());
                 }
             }
         });
