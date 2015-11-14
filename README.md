@@ -44,10 +44,13 @@ The `showAfter(int numbersOfAccess)` method tells the library after how many acc
 Example:
 
 ```java
-        FiveStarsDialog fiveStarsDialog = new FiveStarsDialog(this,"your.support.email@mail.it");
+        FiveStarsDialog fiveStarsDialog = new FiveStarsDialog(this,"angelo.gallarello@gmail.com");
         fiveStarsDialog.setRateText("Your custom text")
                 .setTitle("Your custom title")
                 .setForceMode(false)
+                .setUpperBound(2) // Market opened if a rating >= 2 is selected
+                .setNegativeReviewListener(this) // OVERRIDE mail intent for negative review
+                .setReviewListener(this) // Used to listen for reviews (if you want to track them )
                 .showAfter(0);
 ```
 ## Features
