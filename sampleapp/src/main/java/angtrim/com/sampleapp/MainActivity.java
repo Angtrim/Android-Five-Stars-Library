@@ -1,13 +1,20 @@
 package angtrim.com.sampleapp;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import angtrim.com.fivestarslibrary.FiveStarsDialog;
+import angtrim.com.fivestarslibrary.NegativeReviewListener;
+import angtrim.com.fivestarslibrary.ReviewListener;
 
-public class MainActivity extends AppCompatActivity {
+
+public class MainActivity extends AppCompatActivity implements NegativeReviewListener, ReviewListener {
+
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,6 +24,9 @@ public class MainActivity extends AppCompatActivity {
         fiveStarsDialog.setRateText("Your custom text")
                 .setTitle("Your custom title")
                 .setForceMode(false)
+                .setUpperBound(2)
+                .setNegativeReviewListener(this)
+                .setReviewListener(this)
                 .showAfter(0);
 
     }
@@ -41,5 +51,16 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onNegativeReview(int stars) {
+        Log.d(TAG, "Negative review " + stars);
+        Toast.makeText(this,"You gave my app a bad review, bas***!!11!!!",Toast.LENGTH_LONG);
+    }
+
+    @Override
+    public void onReview(int stars) {
+        Log.d(TAG, "Review " + stars);
     }
 }

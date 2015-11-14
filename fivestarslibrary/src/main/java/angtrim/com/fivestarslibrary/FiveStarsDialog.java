@@ -37,6 +37,9 @@ public class FiveStarsDialog  implements DialogInterface.OnClickListener{
     private String rateText = null;
     private AlertDialog alertDialog;
     private View dialogView;
+    private int upperBound = 4;
+    private NegativeReviewListener negativeReviewListener;
+    private ReviewListener reviewListener;
 
 
     public FiveStarsDialog(Context context,String supportEmail){
@@ -58,7 +61,7 @@ public class FiveStarsDialog  implements DialogInterface.OnClickListener{
             @Override
             public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {
                 Log.d(TAG, "Rating changed : " + v);
-                if (isForceMode && v >= 4) {
+                if (isForceMode && v >= upperBound) {
                     openMarket();
                 }
             }
@@ -125,12 +128,19 @@ public class FiveStarsDialog  implements DialogInterface.OnClickListener{
     @Override
     public void onClick(DialogInterface dialogInterface, int i) {
         if(i == DialogInterface.BUTTON_POSITIVE){
-            if(ratingBar.getRating() <= 3){
-                sendEmail();
+            if(ratingBar.getRating() < upperBound){
+                if(negativeReviewListener == null){
+                    sendEmail();
+                }else{
+                    negativeReviewListener.onNegativeReview((int)ratingBar.getRating());
+                }
+
             }else if(!isForceMode){
                 openMarket();
             }
             disable();
+            if(reviewListener != null)
+                reviewListener.onReview((int)ratingBar.getRating());
         }
         if(i == DialogInterface.BUTTON_NEUTRAL){
             disable();
@@ -159,8 +169,45 @@ public class FiveStarsDialog  implements DialogInterface.OnClickListener{
         return this;
     }
 
+    /**
+     * Set to true if you want to send the user directly to the market
+     * @param isForceMode
+     * @return
+     */
     public FiveStarsDialog setForceMode(boolean isForceMode){
         this.isForceMode = isForceMode;
         return this;
     }
+
+    /**
+     * Set the upper bound for the rating.
+     * If the rating is >= of the bound, the market is opened.
+     * @param bound the upper bound
+     * @return the dialog
+     */
+    public FiveStarsDialog setUpperBound(int bound){
+        this.upperBound = bound;
+        return this;
+    }
+
+    /**
+     * Set a custom listener if you want to OVERRIDE the default "send email" action when the user gives a negative review
+     * @param listener
+     * @return
+     */
+    public FiveStarsDialog setNegativeReviewListener(NegativeReviewListener listener){
+        this.negativeReviewListener = listener;
+        return  this;
+    }
+
+    /**
+     * Set a listener to get notified when a review (positive or negative) is issued, for example for tracking purposes
+     * @param listener
+     * @return
+     */
+    public FiveStarsDialog setReviewListener(ReviewListener listener){
+        this.reviewListener = listener;
+        return this;
+    }
+
 }
