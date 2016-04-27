@@ -76,8 +76,6 @@ public class FiveStarsDialog  implements DialogInterface.OnClickListener{
                 .create();
     }
 
-
-
     private void disable() {
         SharedPreferences shared = context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = shared.edit();
@@ -94,18 +92,14 @@ public class FiveStarsDialog  implements DialogInterface.OnClickListener{
         }
     }
 
-
     private void sendEmail() {
         final Intent emailIntent = new Intent(Intent.ACTION_SEND);
-        emailIntent.setType("plain/text");
-        emailIntent.putExtra(Intent.EXTRA_EMAIL, supportEmail);
+        emailIntent.setType("text/email");
+        emailIntent.putExtra(Intent.EXTRA_EMAIL,new String[] {supportEmail});
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "App Report ("+context.getPackageName()+")");
         emailIntent.putExtra(Intent.EXTRA_TEXT, "");
         context.startActivity(Intent.createChooser(emailIntent, "Send mail..."));
     }
-
-
-
 
     private void show() {
         boolean disabled  = sharedPrefs.getBoolean(SP_DISABLED, false);
