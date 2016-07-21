@@ -48,6 +48,7 @@ Example:
         fiveStarsDialog.setRateText("Your custom text")
                 .setTitle("Your custom title")
                 .setForceMode(false)
+                .setStarColor(Color.YELLOW)
                 .setUpperBound(2) // Market opened if a rating >= 2 is selected
                 .setNegativeReviewListener(this) // OVERRIDE mail intent for negative review
                 .setReviewListener(this) // Used to listen for reviews (if you want to track them )
