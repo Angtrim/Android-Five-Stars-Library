@@ -68,6 +68,13 @@ public class FiveStarsDialog  implements DialogInterface.OnClickListener{
                 }
             }
         });
+
+        if (starColor != -1){
+            LayerDrawable stars = (LayerDrawable) ratingBar.getProgressDrawable();
+            stars.getDrawable(1).setColorFilter(starColor, PorterDuff.Mode.SRC_ATOP);
+            stars.getDrawable(2).setColorFilter(starColor, PorterDuff.Mode.SRC_ATOP);
+        }
+
         alertDialog = builder.setTitle(titleToAdd)
                 .setView(dialogView)
                 .setNegativeButton(DEFAULT_NEGATIVE,this)
@@ -162,6 +169,11 @@ public class FiveStarsDialog  implements DialogInterface.OnClickListener{
 
     public FiveStarsDialog setRateText(String rateText){
         this.rateText = rateText;
+        return this;
+    }
+
+    public FiveStarsDialog setStarColor(int color){
+        starColor = color;
         return this;
     }
 
