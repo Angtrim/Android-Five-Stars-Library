@@ -40,7 +40,7 @@ public class FiveStarsDialog  implements DialogInterface.OnClickListener{
     private int upperBound = 4;
     private NegativeReviewListener negativeReviewListener;
     private ReviewListener reviewListener;
-
+    private int starColor;
 
     public FiveStarsDialog(Context context,String supportEmail){
         this.context = context;
