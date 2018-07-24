@@ -5,7 +5,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import angtrim.com.fivestarslibrary.FiveStarsDialog;
 import angtrim.com.fivestarslibrary.NegativeReviewListener;
@@ -56,7 +55,6 @@ public class MainActivity extends AppCompatActivity implements NegativeReviewLis
     @Override
     public void onNegativeReview(int stars) {
         Log.d(TAG, "Negative review " + stars);
-        Toast.makeText(this,"You gave my app a bad review, bas***!!11!!!",Toast.LENGTH_LONG);
     }
 
     @Override
