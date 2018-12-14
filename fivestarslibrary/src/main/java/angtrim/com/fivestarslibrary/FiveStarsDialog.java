@@ -42,6 +42,9 @@ public class FiveStarsDialog implements DialogInterface.OnClickListener {
     private NegativeReviewListener negativeReviewListener;
     private ReviewListener reviewListener;
     private int starColor;
+    private String positiveButtonText;
+    private String negativeButtonText;
+    private String neverButtonText;
 
     public FiveStarsDialog(Context context, String supportEmail) {
         this.context = context;
@@ -78,9 +81,9 @@ public class FiveStarsDialog implements DialogInterface.OnClickListener {
 
         alertDialog = builder.setTitle(titleToAdd)
                 .setView(dialogView)
-                .setNegativeButton(DEFAULT_NEGATIVE, this)
-                .setPositiveButton(DEFAULT_POSITIVE, this)
-                .setNeutralButton(DEFAULT_NEVER, this)
+                .setNegativeButton((negativeButtonText == null) ? DEFAULT_NEGATIVE : negativeButtonText, this)
+                .setPositiveButton((positiveButtonText == null) ? DEFAULT_POSITIVE : positiveButtonText, this)
+                .setNeutralButton((neverButtonText == null) ? DEFAULT_NEVER : neverButtonText, this)
                 .create();
     }
 
@@ -175,6 +178,21 @@ public class FiveStarsDialog implements DialogInterface.OnClickListener {
 
     public FiveStarsDialog setStarColor(int color) {
         starColor = color;
+        return this;
+    }
+
+    public FiveStarsDialog setPositiveButtonText(String positiveButtonText) {
+        this.positiveButtonText = positiveButtonText;
+        return this;
+    }
+
+    public FiveStarsDialog setNegativeButtonText(String negativeButtonText) {
+        this.negativeButtonText = negativeButtonText;
+        return this;
+    }
+
+    public FiveStarsDialog setNeverButtonText(String neverButtonText) {
+        this.neverButtonText = neverButtonText;
         return this;
     }
 
