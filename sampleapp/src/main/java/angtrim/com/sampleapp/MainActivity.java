@@ -20,15 +20,12 @@ public class MainActivity extends AppCompatActivity implements NegativeReviewLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         FiveStarsDialog fiveStarsDialog = new FiveStarsDialog(this,"angelo.gallarello@gmail.com");
-        fiveStarsDialog.setRateText("Your custom title which is very long and will take more than one line")
+        fiveStarsDialog.setRateText("Your custom text")
                 .setTitle("Your custom title")
                 .setForceMode(false)
                 .setUpperBound(2)
                 .setNegativeReviewListener(this)
                 .setReviewListener(this)
-                .setPositiveButtonText("RATE MEEEE")
-                .setNegativeButtonText("NOT NOWWWWW")
-                .setNeverButtonText("POTEEEE")
                 .showAfter(0);
 
     }
