@@ -154,7 +154,7 @@ public class FiveStarsDialog implements DialogInterface.OnClickListener {
         if (!sharedPrefs.contains(SP_MAX_DATE)) {
             return true;
         }
-        else if (TextUtils.isEmpty(sharedPrefs.getString("currentDate", ""))) {
+        else if (TextUtils.isEmpty(sharedPrefs.getString(SP_MAX_DATE, ""))) {
             return true;
         }
         else {
@@ -185,7 +185,7 @@ public class FiveStarsDialog implements DialogInterface.OnClickListener {
             editor.apply();
         } else {
             try {
-                maxDate = new SimpleDateFormat(PATTERN).parse(sharedPrefs.getString("currentDate", ""));
+                maxDate = new SimpleDateFormat(PATTERN).parse(sharedPrefs.getString(SP_MAX_DATE, ""));
 
                 long diffInMillie = Math.abs((new Date()).getTime() - maxDate.getTime());
                 long diff = TimeUnit.DAYS.convert(diffInMillie, TimeUnit.MILLISECONDS);

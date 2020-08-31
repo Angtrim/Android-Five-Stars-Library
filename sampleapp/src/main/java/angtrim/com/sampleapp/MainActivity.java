@@ -26,6 +26,8 @@ public class MainActivity extends AppCompatActivity implements NegativeReviewLis
                 .setUpperBound(2)
                 .setNegativeReviewListener(this)
                 .setReviewListener(this)
+                .setInAppReviewMode(true)
+                .setAfterNDaysMode(true)
                 .showAfter(0);
     }
 
