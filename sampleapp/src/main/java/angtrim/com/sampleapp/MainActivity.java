@@ -1,7 +1,7 @@
 package angtrim.com.sampleapp;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,8 +26,9 @@ public class MainActivity extends AppCompatActivity implements NegativeReviewLis
                 .setUpperBound(2)
                 .setNegativeReviewListener(this)
                 .setReviewListener(this)
+                .setInAppReviewMode(true)
+                .setAfterNDaysMode(true)
                 .showAfter(0);
-
     }
 
     @Override
