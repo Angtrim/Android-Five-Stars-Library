@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">FiveStarsLibrary</string>
+    <string name="BtnLater">Not now</string>
+    <string name="BtnOK">OK</string>
+    <string name="BtnNever">Never</string>
+    <string name="RateApp">Rate this app</string>
+    <string name="DefaultText">How much do you love this app?</string>
 </resources>

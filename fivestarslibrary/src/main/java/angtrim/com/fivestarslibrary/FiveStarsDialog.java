@@ -1,5 +1,6 @@
 package angtrim.com.fivestarslibrary;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -7,27 +8,44 @@ import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import android.util.Log;
+
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.google.android.play.core.review.ReviewInfo;
+import com.google.android.play.core.review.ReviewManager;
+import com.google.android.play.core.review.ReviewManagerFactory;
+import com.google.android.play.core.tasks.OnCompleteListener;
+import com.google.android.play.core.tasks.OnFailureListener;
+import com.google.android.play.core.tasks.Task;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by angtrim on 12/09/15.
  */
 public class FiveStarsDialog implements DialogInterface.OnClickListener {
 
-    private final static String DEFAULT_TITLE = "Rate this app";
-    private final static String DEFAULT_TEXT = "How much do you love our app?";
     private final static String SP_NUM_OF_ACCESS = "numOfAccess";
+    private final static String SP_MAX_DATE = "maxDate";
+    private final static String PATTERN = "yyyy/MM/dd";
     private static final String SP_DISABLED = "disabled";
     private static final String TAG = FiveStarsDialog.class.getSimpleName();
     private final Context context;
     private boolean isForceMode = false;
     private final SharedPreferences sharedPrefs;
+    private String defaultTitle;
+    private String defaultText;
     private String supportEmail;
     private TextView contentTextView;
     private RatingBar ratingBar;
@@ -38,13 +56,21 @@ public class FiveStarsDialog implements DialogInterface.OnClickListener {
     private int upperBound = 4;
     private NegativeReviewListener negativeReviewListener;
     private ReviewListener reviewListener;
+    private InAppReviewListener inAppReviewListener;
     private int starColor;
-    private String positiveButtonText = "Ok";
-    private String negativeButtonText = "Not Now";
-    private String neutralButtonText = "Never";
+    private String positiveButtonText;
+    private String negativeButtonText;
+    private String neutralButtonText;
+    private boolean inAppReviewMode = false;
+    private boolean afterNDaysMode = false;
 
     public FiveStarsDialog(Context context, String supportEmail) {
         this.context = context;
+        negativeButtonText = context.getString(R.string.BtnLater);
+        positiveButtonText = context.getString(R.string.BtnOK);
+        neutralButtonText = context.getString(R.string.BtnNever);
+        defaultTitle = context.getString(R.string.RateApp);
+        defaultText = context.getString(R.string.DefaultText);
         sharedPrefs = context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE);
         this.supportEmail = supportEmail;
     }
@@ -53,17 +79,20 @@ public class FiveStarsDialog implements DialogInterface.OnClickListener {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         LayoutInflater inflater = LayoutInflater.from(context);
         dialogView = inflater.inflate(R.layout.stars, null);
-        String titleToAdd = (title == null) ? DEFAULT_TITLE : title;
-        String textToAdd = (rateText == null) ? DEFAULT_TEXT : rateText;
+        String titleToAdd = (title == null) ? defaultTitle : title;
+        String textToAdd = (rateText == null) ? defaultText : rateText;
         contentTextView = dialogView.findViewById(R.id.text_content);
         contentTextView.setText(textToAdd);
         ratingBar = dialogView.findViewById(R.id.ratingBar);
         ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {
-                Log.d(TAG, "Rating changed : " + v);
                 if (isForceMode && v >= upperBound) {
-                    openMarket();
+                    if (inAppReviewMode) {
+                        launchInAppReview();
+                    } else {
+                        openMarket();
+                    }
                     if (reviewListener != null)
                         reviewListener.onReview((int) ratingBar.getRating());
                 }
@@ -121,9 +150,56 @@ public class FiveStarsDialog implements DialogInterface.OnClickListener {
         }
     }
 
+    private boolean isMaxDateEmpty() {
+        if (!sharedPrefs.contains(SP_MAX_DATE)) {
+            return true;
+        }
+        else if (TextUtils.isEmpty(sharedPrefs.getString("currentDate", ""))) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
     public void showAfter(int numberOfAccess) {
         build();
         SharedPreferences.Editor editor = sharedPrefs.edit();
+        if (!afterNDaysMode) {
+            defaultLaunch(numberOfAccess, editor);
+        }
+        else {
+            launchByDates(numberOfAccess, editor);
+        }
+    }
+
+    private void launchByDates(int numberOfAccess, SharedPreferences.Editor editor) {
+        Date maxDate;
+        if (isMaxDateEmpty()) {
+            Calendar c = Calendar.getInstance();
+            c.add(Calendar.DATE, numberOfAccess);
+
+            SimpleDateFormat formatter = new SimpleDateFormat(PATTERN);
+            maxDate = c.getTime();
+            editor.putString(SP_MAX_DATE, formatter.format(formatter.format(maxDate)));
+            editor.apply();
+        } else {
+            try {
+                maxDate = new SimpleDateFormat(PATTERN).parse(sharedPrefs.getString("currentDate", ""));
+
+                long diffInMillie = Math.abs((new Date()).getTime() - maxDate.getTime());
+                long diff = TimeUnit.DAYS.convert(diffInMillie, TimeUnit.MILLISECONDS);
+
+                if (diff >= numberOfAccess) {
+                    show();
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void defaultLaunch(int numberOfAccess, SharedPreferences.Editor editor) {
         int numOfAccess = sharedPrefs.getInt(SP_NUM_OF_ACCESS, 0);
         editor.putInt(SP_NUM_OF_ACCESS, numOfAccess + 1);
         editor.apply();
@@ -132,31 +208,35 @@ public class FiveStarsDialog implements DialogInterface.OnClickListener {
         }
     }
 
-
     @Override
     public void onClick(DialogInterface dialogInterface, int i) {
-        if (i == DialogInterface.BUTTON_POSITIVE) {
-            if (ratingBar.getRating() < upperBound) {
-                if (negativeReviewListener == null) {
-                    sendEmail();
-                } else {
-                    negativeReviewListener.onNegativeReview((int) ratingBar.getRating());
+        switch (i) {
+            case DialogInterface.BUTTON_POSITIVE:
+                if (ratingBar.getRating() < upperBound) {
+                    if (negativeReviewListener == null) {
+                        sendEmail();
+                    } else {
+                        negativeReviewListener.onNegativeReview((int) ratingBar.getRating());
+                    }
+                } else if (!isForceMode) {
+                    openMarket();
                 }
-
-            } else if (!isForceMode) {
-                openMarket();
-            }
-            disable();
-            if (reviewListener != null)
-                reviewListener.onReview((int) ratingBar.getRating());
-        }
-        if (i == DialogInterface.BUTTON_NEUTRAL) {
-            disable();
-        }
-        if (i == DialogInterface.BUTTON_NEGATIVE) {
-            SharedPreferences.Editor editor = sharedPrefs.edit();
-            editor.putInt(SP_NUM_OF_ACCESS, 0);
-            editor.apply();
+                disable();
+                if (reviewListener != null) {
+                    reviewListener.onReview((int) ratingBar.getRating());
+                }
+                break;
+            case DialogInterface.BUTTON_NEUTRAL:
+                disable();
+                break;
+            case DialogInterface.BUTTON_NEGATIVE:
+                SharedPreferences.Editor editor = sharedPrefs.edit();
+                editor.putInt(SP_NUM_OF_ACCESS, 0);
+                if (sharedPrefs.contains(SP_MAX_DATE)) {
+                    editor.putString(SP_MAX_DATE, "");
+                }
+                editor.apply();
+                break;
         }
         alertDialog.hide();
     }
@@ -242,4 +322,68 @@ public class FiveStarsDialog implements DialogInterface.OnClickListener {
         return this;
     }
 
+    /**
+     * Enable in-app review popup
+     *
+     * @param inAppReviewMode
+     * @return
+     */
+    public FiveStarsDialog setInAppReviewMode(boolean inAppReviewMode) {
+        this.inAppReviewMode = inAppReviewMode;
+        return this;
+    }
+
+    /**
+     * Set a listener to get notified when in app review flow completed, for example for tracking purposes
+     *
+     * Note that, The API does not indicate whether the user reviewed or not, or even whether the review dialog was shown
+     *
+     * @param inAppReviewListener
+     * @return
+     */
+    public FiveStarsDialog setInAppReviewListener(InAppReviewListener inAppReviewListener) {
+        this.inAppReviewListener = inAppReviewListener;
+        return this;
+    }
+
+    private void launchInAppReview() {
+        final ReviewManager manager = ReviewManagerFactory.create(context);
+        Task<ReviewInfo> request = manager.requestReviewFlow();
+        request.addOnCompleteListener(new OnCompleteListener<ReviewInfo>() {
+            @Override
+            public void onComplete(@NonNull Task<ReviewInfo> task) {
+                if (task.isSuccessful()) {
+                    if (context instanceof Activity) {
+                        Task<Void> flow = manager.launchReviewFlow(((Activity) context), task.getResult());
+                        flow.addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (inAppReviewListener != null) {
+                                    inAppReviewListener.onInAppReview();
+                                }
+                            }
+                        });
+                        flow.addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(Exception e) {
+                                openMarket();
+                            }
+                        });
+                    } else {
+                        openMarket();
+                    }
+                } else {
+                    openMarket();
+                }
+            }
+        });
+    }
+
+    public boolean isAfterNDaysMode() {
+        return afterNDaysMode;
+    }
+
+    public void setAfterNDaysMode(boolean afterNDaysMode) {
+        this.afterNDaysMode = afterNDaysMode;
+    }
 }

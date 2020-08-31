@@ -27,7 +27,6 @@ public class MainActivity extends AppCompatActivity implements NegativeReviewLis
                 .setNegativeReviewListener(this)
                 .setReviewListener(this)
                 .showAfter(0);
-
     }
 
     @Override
