@@ -181,7 +181,7 @@ public class FiveStarsDialog implements DialogInterface.OnClickListener {
 
             SimpleDateFormat formatter = new SimpleDateFormat(PATTERN);
             maxDate = c.getTime();
-            editor.putString(SP_MAX_DATE, formatter.format(formatter.format(maxDate)));
+            editor.putString(SP_MAX_DATE, formatter.format(maxDate));
             editor.apply();
         } else {
             try {
