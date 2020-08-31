@@ -244,7 +244,6 @@ public class FiveStarsDialog implements DialogInterface.OnClickListener {
     public FiveStarsDialog setTitle(String title) {
         this.title = title;
         return this;
-
     }
 
     public FiveStarsDialog setSupportEmail(String supportEmail) {
@@ -346,6 +345,17 @@ public class FiveStarsDialog implements DialogInterface.OnClickListener {
         return this;
     }
 
+    /**
+     *
+     * Enable launching after N days
+     * @param afterNDaysMode
+     * @return
+     */
+    public FiveStarsDialog setAfterNDaysMode(boolean afterNDaysMode) {
+        this.afterNDaysMode = afterNDaysMode;
+        return this;
+    }
+
     private void launchInAppReview() {
         final ReviewManager manager = ReviewManagerFactory.create(context);
         Task<ReviewInfo> request = manager.requestReviewFlow();
@@ -377,13 +387,5 @@ public class FiveStarsDialog implements DialogInterface.OnClickListener {
                 }
             }
         });
-    }
-
-    public boolean isAfterNDaysMode() {
-        return afterNDaysMode;
-    }
-
-    public void setAfterNDaysMode(boolean afterNDaysMode) {
-        this.afterNDaysMode = afterNDaysMode;
     }
 }
