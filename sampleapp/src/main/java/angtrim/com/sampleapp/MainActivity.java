@@ -1,11 +1,10 @@
 package angtrim.com.sampleapp;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-
 import angtrim.com.fivestarslibrary.FiveStarsDialog;
 import angtrim.com.fivestarslibrary.NegativeReviewListener;
 import angtrim.com.fivestarslibrary.ReviewListener;
@@ -26,6 +25,8 @@ public class MainActivity extends AppCompatActivity implements NegativeReviewLis
                 .setUpperBound(2)
                 .setNegativeReviewListener(this)
                 .setReviewListener(this)
+                .setInAppReviewMode(true)
+                .setAfterNDaysMode(true)
                 .showAfter(0);
 
     }

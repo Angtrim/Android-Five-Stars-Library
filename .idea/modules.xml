@@ -2,12 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/Android-Five-Stars-Library.iml" filepath="$PROJECT_DIR$/.idea/Android-Five-Stars-Library.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Android-Five-Stars-Library.iml" filepath="$PROJECT_DIR$/Android-Five-Stars-Library.iml" />
-      <module fileurl="file://$PROJECT_DIR$/fivestarslibrary/fivestarslibrary.iml" filepath="$PROJECT_DIR$/fivestarslibrary/fivestarslibrary.iml" />
-      <module fileurl="file://$PROJECT_DIR$/fivestarslibrary/fivestarslibrary.iml" filepath="$PROJECT_DIR$/fivestarslibrary/fivestarslibrary.iml" />
-      <module fileurl="file://$PROJECT_DIR$/sampleapp/sampleapp.iml" filepath="$PROJECT_DIR$/sampleapp/sampleapp.iml" />
-      <module fileurl="file://$PROJECT_DIR$/sampleapp/sampleapp.iml" filepath="$PROJECT_DIR$/sampleapp/sampleapp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Android-Five-Stars-Library.iml" filepath="$PROJECT_DIR$/.idea/modules/Android-Five-Stars-Library.iml" group="Android-Five-Stars-Library" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/fivestarslibrary/fivestarslibrary.iml" filepath="$PROJECT_DIR$/.idea/modules/fivestarslibrary/fivestarslibrary.iml" group="Android-Five-Stars-Library/fivestarslibrary" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/sampleapp/sampleapp.iml" filepath="$PROJECT_DIR$/.idea/modules/sampleapp/sampleapp.iml" group="Android-Five-Stars-Library/sampleapp" />
     </modules>
   </component>
 </project>
